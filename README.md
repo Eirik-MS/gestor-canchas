@@ -155,4 +155,4 @@ tipo_cancha · cancha · usuario · reserva · medio_pago · pago · lista_esper
 - [ ] Métodos de pago (efectivo, transferencia, tarjeta)
 - [ ] Panel del complejo con estado de pagos
 - [ ] Lista de espera funcional
-- [ ] Interfaz gráfica (Tkinter o Flask)
+- [ ] Interfaz gráfica (Flask)

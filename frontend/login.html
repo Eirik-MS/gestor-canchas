@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}
+Iniciar sesión
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+        <h1 class="h3 text-center mb-4">Iniciar sesión</h1>
+
+        {# ─────────── MENSAJES (errores / avisos) ─────────── #}
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                {% for categoria, texto in mensajes %}
+                    <div class="alert alert-{{ categoria }}">{{ texto }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                {# ─────────── PESTAÑAS: Jugador / Complejo ─────────── #}
+                <ul class="nav nav-pills nav-fill mb-4" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-jugador"
+                                data-bs-toggle="pill" data-bs-target="#panel-jugador"
+                                type="button" role="tab">
+                            Soy jugador
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-complejo"
+                                data-bs-toggle="pill" data-bs-target="#panel-complejo"
+                                type="button" role="tab">
+                            Soy complejo
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+
+                    {# ─────────── LOGIN JUGADOR ─────────── #}
+                    <div class="tab-pane fade show active" id="panel-jugador" role="tabpanel">
+                        <form method="post" action="/login">
+                            <input type="hidden" name="tipo" value="jugador">
+
+                            <div class="mb-3">
+                                <label for="email_jugador" class="form-label">Email</label>
+                                <input type="email" class="form-control"
+                                       id="email_jugador" name="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="pass_jugador" class="form-label">Password</label>
+                                <input type="password" class="form-control"
+                                       id="pass_jugador" name="password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">
+                                Entrar
+                            </button>
+                        </form>
+
+                        <p class="text-center text-muted small mt-3 mb-0">
+                            ¿No tenés cuenta?
+                            <a href="/registro">Registrate</a>
+                        </p>
+                    </div>
+
+                    {# ─────────── LOGIN COMPLEJO ─────────── #}
+                    <div class="tab-pane fade" id="panel-complejo" role="tabpanel">
+                        <form method="post" action="/login">
+                            <input type="hidden" name="tipo" value="complejo">
+
+                            <div class="mb-3">
+                                <label for="email_complejo" class="form-label">Email</label>
+                                <input type="email" class="form-control"
+                                       id="email_complejo" name="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="pass_complejo" class="form-label">Password</label>
+                                <input type="password" class="form-control"
+                                       id="pass_complejo" name="password" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">
+                                Entrar
+                            </button>
+                        </form>
+
+                        <p class="text-center text-muted small mt-3 mb-0">
+                            ¿Tu complejo no está registrado?
+                            <a href="/registro-complejo">Registralo</a>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
