@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+
+    <h1 class="display-4">
+        Reservá canchas de fútbol fácilmente
+    </h1>
+
+    <p class="lead">
+        Encontrá disponibilidad en complejos deportivos de toda la ciudad.
+    </p>
+
+    <img
+        src="{{ url_for('static', filename='images/football_pitch2.jpg') }}"
+        class="img-fluid rounded shadow"
+        alt="Cancha de fútbol">
+
+    <div class="mt-4">
+        <a href="/buscar" class="btn btn-success btn-lg">
+            Buscar Canchas
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

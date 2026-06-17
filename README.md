@@ -43,11 +43,21 @@ DB_NAME=canchas_db
 ```
 
 ### 5. Correr la aplicación
+
+#### Console:
+
 ```bash
 cd backend
 python3 main.py
 ```
 
+#### Interfaze web (Flask):
+Ejecuta la aplicación mediante navegador web.
+```
+python3 webserver.py
+```
+Abrir en el navegador: [http://localhost:8080](http://localhost:8080)
+En modo desarrollo Flask recarga automáticamente los cambios realizados en los archivos Python.
 ---
 
 ## Usuario de prueba
@@ -78,20 +88,31 @@ Para probar el login de complejo:
 ## Estructura del proyecto
 ```
 gestor-canchas/
-├── .env                  ← credenciales locales (NO se sube a GitHub)
-├── .env.example          ← plantilla de credenciales
+├── .env                            ← credenciales locales (NO se sube a GitHub)
+├── .env.example                    ← plantilla de credenciales
 ├── .gitignore
-├── requirements.txt      ← dependencias Python
-├── canchas_bd.sql        ← script SQL para crear la BD
-└── backend/
-    ├── conexion.py       ← conexión a MySQL
-    ├── main.py           ← punto de entrada / menú principal
-    └── models/
-        ├── __init__.py
-        ├── usuarios.py   ← ABMC de usuarios + login
-        ├── complejos.py  ← ABMC de complejos + login
-        ├── canchas.py    ← ABMC de canchas + búsqueda disponible
-        └── reservas.py   ← crear reservas, lista de espera
+├── requirements.txt                ← dependencias Python
+├── canchas_bd.sql                  ← script SQL para crear la BD
+├── backend/
+|   ├── conexion.py                 ← conexión a MySQL
+|   ├── main.py                     ← punto de entrada / menú principal
+|   └── models/
+|       ├── __init__.py
+|       ├── usuarios.py             ← ABMC de usuarios + login
+|       ├── complejos.py            ← ABMC de complejos + login
+|       ├── canchas.py              ← ABMC de canchas + búsqueda disponible
+|       └── reservas.py             ← crear reservas, lista de espera
+├── frontend/                       ← carpeta para páginas web
+│   ├── base.html 
+│   └── index.html
+├── static/                         ← carpeta para archivos estáticos que Flask puede usar
+│   ├── css/ 
+│   |   ├── bootstrap.min.css       ← Un framework para el diseño de sitios web
+│   │   └── style.css
+│   ├── js/
+|   |   └── bootstrap.bundle.min.js ← Un framework para el diseño de sitios web
+|   └── images/                     ← Todos a la picturas
+└── webserver.py                    ← Flask webserver
 ```
 
 ---
@@ -134,4 +155,4 @@ tipo_cancha · cancha · usuario · reserva · medio_pago · pago · lista_esper
 - [ ] Métodos de pago (efectivo, transferencia, tarjeta)
 - [ ] Panel del complejo con estado de pagos
 - [ ] Lista de espera funcional
-- [ ] Interfaz gráfica (Tkinter o Flask)
+- [ ] Interfaz gráfica (Flask)
