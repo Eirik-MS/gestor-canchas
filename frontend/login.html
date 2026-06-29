@@ -1,110 +1,122 @@
 {% extends "base.html" %}
-
-{% block title %}
-Iniciar sesión
-{% endblock %}
+{% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
-
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
 
-        <h1 class="h3 text-center mb-4">Iniciar sesión</h1>
-
-        {# ─────────── MENSAJES (errores / avisos) ─────────── #}
-        {% with mensajes = get_flashed_messages(with_categories=true) %}
-            {% if mensajes %}
-                {% for categoria, texto in mensajes %}
-                    <div class="alert alert-{{ categoria }}">{{ texto }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <div class="text-center mb-4">
+            <div style="font-size:2.5rem">⚽</div>
+            <h1 class="h3 fw-bold">Iniciar sesión</h1>
+            <p class="text-muted">Accedé a tu cuenta de CanChas</p>
+        </div>
 
         <div class="card shadow-sm">
-            <div class="card-body">
+            <div class="card-body p-4">
 
-                {# ─────────── PESTAÑAS: Jugador / Complejo ─────────── #}
+                <!-- ── PESTAÑAS ── -->
                 <ul class="nav nav-pills nav-fill mb-4" role="tablist">
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item">
                         <button class="nav-link active" id="tab-jugador"
                                 data-bs-toggle="pill" data-bs-target="#panel-jugador"
-                                type="button" role="tab">
-                            Soy jugador
+                                type="button">
+                            👤 Soy jugador
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item">
                         <button class="nav-link" id="tab-complejo"
                                 data-bs-toggle="pill" data-bs-target="#panel-complejo"
-                                type="button" role="tab">
-                            Soy complejo
+                                type="button">
+                            🏟️ Soy complejo
                         </button>
                     </li>
                 </ul>
 
                 <div class="tab-content">
 
-                    {# ─────────── LOGIN JUGADOR ─────────── #}
-                    <div class="tab-pane fade show active" id="panel-jugador" role="tabpanel">
-                        <form method="post" action="/login">
+                    <!-- LOGIN JUGADOR -->
+                    <div class="tab-pane fade show active" id="panel-jugador">
+                        <form method="post" action="/login" novalidate>
                             <input type="hidden" name="tipo" value="jugador">
 
                             <div class="mb-3">
-                                <label for="email_jugador" class="form-label">Email</label>
-                                <input type="email" class="form-control"
-                                       id="email_jugador" name="email" required>
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" class="form-control" name="email"
+                                       placeholder="tu@email.com" autocomplete="email" required>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="pass_jugador" class="form-label">Password</label>
-                                <input type="password" class="form-control"
-                                       id="pass_jugador" name="password" required>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" name="password"
+                                           id="pass_jug" autocomplete="current-password" required>
+                                    <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePass('pass_jug', this)">👁</button>
+                                </div>
                             </div>
 
-                            <button type="submit" class="btn btn-success w-100">
+                            <button type="submit" class="btn btn-success w-100 fw-semibold py-2">
                                 Entrar
                             </button>
                         </form>
 
                         <p class="text-center text-muted small mt-3 mb-0">
                             ¿No tenés cuenta?
-                            <a href="/registro">Registrate</a>
+                            <a href="/registro" class="text-success fw-semibold">Registrate gratis</a>
                         </p>
                     </div>
 
-                    {# ─────────── LOGIN COMPLEJO ─────────── #}
-                    <div class="tab-pane fade" id="panel-complejo" role="tabpanel">
-                        <form method="post" action="/login">
+                    <!-- LOGIN COMPLEJO -->
+                    <div class="tab-pane fade" id="panel-complejo">
+                        <form method="post" action="/login" novalidate>
                             <input type="hidden" name="tipo" value="complejo">
 
                             <div class="mb-3">
-                                <label for="email_complejo" class="form-label">Email</label>
-                                <input type="email" class="form-control"
-                                       id="email_complejo" name="email" required>
+                                <label class="form-label fw-semibold">Email del complejo</label>
+                                <input type="email" class="form-control" name="email"
+                                       placeholder="complejo@email.com" autocomplete="email" required>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="pass_complejo" class="form-label">Password</label>
-                                <input type="password" class="form-control"
-                                       id="pass_complejo" name="password" required>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" name="password"
+                                           id="pass_comp" autocomplete="current-password" required>
+                                    <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePass('pass_comp', this)">👁</button>
+                                </div>
                             </div>
 
-                            <button type="submit" class="btn btn-success w-100">
+                            <button type="submit" class="btn btn-success w-100 fw-semibold py-2">
                                 Entrar
                             </button>
                         </form>
 
                         <p class="text-center text-muted small mt-3 mb-0">
                             ¿Tu complejo no está registrado?
-                            <a href="/registro-complejo">Registralo</a>
+                            <a href="/registro-complejo" class="text-success fw-semibold">Registralo aquí</a>
                         </p>
                     </div>
 
                 </div>
-
             </div>
         </div>
 
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
+<script>
+function togglePass(id, btn) {
+    const input = document.getElementById(id);
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+    }
+}
+</script>
 {% endblock %}

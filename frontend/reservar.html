@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Confirmar Reserva{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+
+        <div class="mb-4">
+            <a href="/buscar" class="text-muted text-decoration-none small">← Volver a la búsqueda</a>
+            <h1 class="h3 fw-bold mt-2">✅ Confirmar reserva</h1>
+        </div>
+
+        <!-- Resumen -->
+        <div class="card shadow-sm mb-4" style="border-left: 5px solid var(--verde);">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Resumen de tu reserva</h5>
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width:40%">🏟️ Complejo</td>
+                            <td class="fw-semibold">{{ complejo }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">⚽ Cancha</td>
+                            <td class="fw-semibold">{{ cancha }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">📅 Fecha</td>
+                            <td class="fw-semibold">{{ fecha }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">🕐 Horario</td>
+                            <td class="fw-semibold">{{ hora_inicio }} a {{ hora_fin }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">💰 Precio/hora</td>
+                            <td class="fw-semibold">${{ precio }}</td>
+                        </tr>
+                        <tr class="border-top">
+                            <td class="fw-bold">Total estimado</td>
+                            <td class="fw-bold text-success fs-5" id="totalEstimado">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Formulario de confirmación -->
+        <form method="post" action="/reservar">
+            <input type="hidden" name="id_cancha"  value="{{ id_cancha }}">
+            <input type="hidden" name="fecha"       value="{{ fecha }}">
+            <input type="hidden" name="hora_inicio" value="{{ hora_inicio }}">
+            <input type="hidden" name="hora_fin"    value="{{ hora_fin }}">
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Medio de pago</label>
+                <select class="form-select" name="id_medio_pago">
+                    <option value="1">💵 Efectivo (pago en el complejo)</option>
+                    <option value="2">🏦 Transferencia bancaria</option>
+                    <option value="3">💳 Tarjeta (pago inmediato)</option>
+                </select>
+                <div class="form-text">
+                    Efectivo y transferencia quedan como pago pendiente hasta 40 min antes del turno.
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-lg fw-semibold">
+                    Confirmar reserva ✅
+                </button>
+                <a href="/buscar" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Calcular total estimado en tiempo real
+(function() {
+    const ini  = "{{ hora_inicio }}";
+    const fin  = "{{ hora_fin }}";
+    const prec = parseFloat("{{ precio }}") || 0;
+
+    if (ini && fin && prec) {
+        const [h1, m1] = ini.split(':').map(Number);
+        const [h2, m2] = fin.split(':').map(Number);
+        const horas = ((h2 * 60 + m2) - (h1 * 60 + m1)) / 60;
+        if (horas > 0) {
+            document.getElementById('totalEstimado').textContent =
+                '$' + (horas * prec).toFixed(0);
+        }
+    }
+})();
+</script>
+{% endblock %}

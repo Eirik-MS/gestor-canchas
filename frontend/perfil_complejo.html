@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Configuración del Complejo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+
+        <div class="mb-4">
+            <a href="/panel-complejo" class="text-muted text-decoration-none small">← Volver al panel</a>
+            <h1 class="h3 fw-bold mt-2">⚙️ Datos del complejo</h1>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" action="/perfil-complejo">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nombre"
+                               value="{{ session.cuenta.nombre }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Dirección</label>
+                        <input type="text" class="form-control" name="direccion"
+                               value="{{ session.cuenta.get('direccion', '') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Teléfono</label>
+                        <input type="tel" class="form-control" name="telefono"
+                               value="{{ session.cuenta.get('telefono', '') }}">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Descripción</label>
+                        <textarea class="form-control" name="descripcion" rows="3">{{ session.cuenta.get('descripcion', '') }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">
+                        Guardar cambios ✓
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}Panel del Complejo{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-0">🏟️ {{ session.cuenta.nombre }}</h1>
+        <p class="text-muted mb-0 small">Panel de administración</p>
+    </div>
+    <a href="/agregar-cancha" class="btn btn-success">+ Agregar cancha</a>
+</div>
+
+<!-- ── MIS CANCHAS ── -->
+<h5 class="fw-bold mb-3">Mis canchas</h5>
+{% if canchas %}
+<div class="row mb-5 g-3">
+    {% for c in canchas %}
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0 fw-bold">{{ c.nombre }}</h6>
+                    {% if c.disponible %}
+                        <span class="badge bg-success">Activa</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactiva</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted mb-1 small">{{ c.tipo }} · {{ c.capacidad_jugadores }} jugadores</p>
+                <p class="mb-2 small">
+                    {% if c.techada %}
+                        <span class="badge bg-info text-dark">Techada</span>
+                    {% else %}
+                        <span class="badge bg-light text-dark border">Aire libre</span>
+                    {% endif %}
+                </p>
+                <p class="fw-bold mb-3 text-success">${{ "%.0f"|format(c.precio_por_hora) }}/hora</p>
+                <div class="d-flex gap-2">
+                    <a href="/editar-cancha/{{ c.id_cancha }}"
+                       class="btn btn-outline-secondary btn-sm">Editar</a>
+                    <form method="post" action="/dar-baja-cancha/{{ c.id_cancha }}"
+                          onsubmit="return confirm('¿Dar de baja la cancha {{ c.nombre }}?')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Dar de baja</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info mb-5">
+    No hay canchas registradas.
+    <a href="/agregar-cancha" class="alert-link">Agregá tu primera cancha</a>.
+</div>
+{% endif %}
+
+<!-- ── RESERVAS ── -->
+<h5 class="fw-bold mb-3">Reservas</h5>
+{% if reservas %}
+
+<!-- Filtro de estado -->
+<div class="mb-3">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-secondary btn-sm active"
+                onclick="filtrarReservas('todas', this)">Todas</button>
+        <button type="button" class="btn btn-outline-success btn-sm"
+                onclick="filtrarReservas('confirmada', this)">Confirmadas</button>
+        <button type="button" class="btn btn-outline-danger btn-sm"
+                onclick="filtrarReservas('cancelada', this)">Canceladas</button>
+        <button type="button" class="btn btn-outline-warning btn-sm"
+                onclick="filtrarReservas('pendiente', this)">Pago pendiente</button>
+    </div>
+</div>
+
+<div id="listaReservas">
+{% for r in reservas %}
+<div class="card mb-2 shadow-sm reserva-item
+    {% if r.alerta_vencido %}reserva-vencida{% endif %}
+    {% if r.tiene_espera %}reserva-espera{% endif %}"
+    data-estado="{{ r.estado_reserva }}"
+    data-pago="{{ r.estado_pago }}">
+    <div class="card-body py-3">
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <strong>{{ r.cancha }}</strong>
+                    <span class="badge bg-secondary small">{{ r.tipo }}</span>
+                    <span class="badge
+                        {% if r.estado_reserva == 'confirmada' %}bg-success
+                        {% elif r.estado_reserva == 'cancelada' %}bg-danger
+                        {% else %}bg-secondary{% endif %} small">
+                        {{ r.estado_reserva }}
+                    </span>
+                    {% if r.alerta_vencido %}
+                        <span class="badge bg-danger small">⚠️ Pago vencido</span>
+                    {% endif %}
+                    {% if r.tiene_espera %}
+                        <span class="badge bg-warning text-dark small">🕐 En espera: DNI {{ r.dni_en_espera }}</span>
+                    {% endif %}
+                </div>
+                <div class="small text-muted">
+                    👤 {{ r.usuario }} &nbsp;·&nbsp;
+                    📞 {{ r.telefono }} &nbsp;·&nbsp;
+                    📅 {{ r.fecha }} &nbsp;·&nbsp;
+                    🕐 {{ r.hora_inicio|string|truncate(5,true,'') }}–{{ r.hora_fin|string|truncate(5,true,'') }}
+                </div>
+                <div class="small mt-1">
+                    💰 ${{ "%.0f"|format(r.total) }}
+                    {% if r.medio_pago %} · {{ r.medio_pago }}{% endif %}
+                    &nbsp;·&nbsp;
+                    {% if r.estado_pago == 'pagado' %}
+                        <span class="text-success fw-semibold">✓ Pagado</span>
+                    {% elif r.estado_pago == 'pendiente' %}
+                        <span class="text-warning fw-semibold">Pago pendiente</span>
+                        {% if r.fecha_limite_pago %}
+                            <span class="text-muted">— límite: {{ r.fecha_limite_pago }}</span>
+                        {% endif %}
+                    {% endif %}
+                    {% if r.nro_operacion %}
+                        <span class="text-muted">· Op: {{ r.nro_operacion }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-auto text-end">
+                <small class="text-muted">#{{ r.id_reserva }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+
+{% else %}
+<div class="alert alert-info">Aún no hay reservas registradas para tu complejo.</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filtrarReservas(estado, btn) {
+    // Actualizar botones activos
+    document.querySelectorAll('.btn-group .btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.reserva-item').forEach(item => {
+        if (estado === 'todas') {
+            item.style.display = '';
+        } else if (estado === 'pendiente') {
+            item.style.display = item.dataset.pago === 'pendiente' ? '' : 'none';
+        } else {
+            item.style.display = item.dataset.estado === estado ? '' : 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

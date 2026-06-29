@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+
+        <h1 class="h3 fw-bold mb-4">👤 Mi perfil</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" action="/mi-perfil">
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nombre"
+                                   value="{{ session.cuenta.nombre }}" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Apellido <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="apellido"
+                                   value="{{ session.cuenta.apellido }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email"
+                                   value="{{ session.cuenta.email }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Teléfono</label>
+                            <input type="tel" class="form-control" name="telefono"
+                                   value="{{ session.cuenta.telefono or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3 small">
+                        <strong>DNI:</strong> {{ session.cuenta.dni }} — no se puede modificar.
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-semibold mt-2">
+                        Guardar cambios ✓
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

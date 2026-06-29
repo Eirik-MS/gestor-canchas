@@ -1,137 +1,152 @@
 {% extends "base.html" %}
-
-{% block title %}
-Buscar Canchas
-{% endblock %}
+{% block title %}Buscar Canchas{% endblock %}
 
 {% block content %}
 
-<div class="row justify-content-center">
-    <div class="col-lg-10">
+<h1 class="fw-bold mb-4">🔍 Buscar canchas disponibles</h1>
 
-        <h1 class="h3 mb-4">Buscar canchas disponibles</h1>
+<!-- ── FORMULARIO ── -->
+<div class="card search-card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" action="/buscar">
+            <div class="row g-3 align-items-end">
 
-        {# ─────────── FORMULARIO DE BÚSQUEDA ─────────── #}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <form method="get" action="/buscar">
-                    <div class="row g-3">
-
-                        <div class="col-md-3">
-                            <label for="fecha" class="form-label">Fecha</label>
-                            <input type="date"
-                                   class="form-control"
-                                   id="fecha"
-                                   name="fecha"
-                                   value="{{ request.args.get('fecha', '') }}"
-                                   required>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label for="hora_inicio" class="form-label">Hora inicio</label>
-                            <input type="time"
-                                   class="form-control"
-                                   id="hora_inicio"
-                                   name="hora_inicio"
-                                   value="{{ request.args.get('hora_inicio', '') }}"
-                                   required>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label for="hora_fin" class="form-label">Hora fin</label>
-                            <input type="time"
-                                   class="form-control"
-                                   id="hora_fin"
-                                   name="hora_fin"
-                                   value="{{ request.args.get('hora_fin', '') }}"
-                                   required>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="id_barrio" class="form-label">Barrio</label>
-                            <select class="form-select" id="id_barrio" name="id_barrio">
-                                {% set barrio_sel = request.args.get('id_barrio', '') %}
-                                <option value="" {% if barrio_sel == '' %}selected{% endif %}>Todos</option>
-                                <option value="1" {% if barrio_sel == '1' %}selected{% endif %}>Palermo</option>
-                                <option value="2" {% if barrio_sel == '2' %}selected{% endif %}>Belgrano</option>
-                                <option value="3" {% if barrio_sel == '3' %}selected{% endif %}>Almagro</option>
-                                <option value="4" {% if barrio_sel == '4' %}selected{% endif %}>Villa Crespo</option>
-                                <option value="5" {% if barrio_sel == '5' %}selected{% endif %}>Caballito</option>
-                                <option value="6" {% if barrio_sel == '6' %}selected{% endif %}>Flores</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-100">
-                                Buscar
-                            </button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {# ─────────── RESULTADOS ─────────── #}
-        {% if request.args.get('fecha') %}
-
-            {% if canchas %}
-                <p class="text-muted">
-                    {{ canchas|length }} cancha(s) disponible(s) para el
-                    {{ request.args.get('fecha') }}
-                    de {{ request.args.get('hora_inicio') }} a {{ request.args.get('hora_fin') }}.
-                </p>
-
-                {# Agrupamos por complejo para que no haya que revisar uno por uno #}
-                {% for complejo, items in canchas|groupby('complejo') %}
-                    <div class="card shadow-sm mb-3">
-                        <div class="card-header bg-dark text-white">
-                            {{ complejo }}
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            {% for c in items %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                    <div>
-                                        <strong>{{ c.cancha }}</strong>
-                                        <span class="badge bg-secondary ms-1">{{ c.tipo }}</span>
-                                        {% if c.techada %}
-                                            <span class="badge bg-info text-dark ms-1">Techada</span>
-                                        {% else %}
-                                            <span class="badge bg-light text-dark ms-1">Al aire libre</span>
-                                        {% endif %}
-                                        <div class="text-muted small mt-1">
-                                            {{ c.capacidad_jugadores }} jugadores · ${{ c.precio_por_hora }}/hora
-                                        </div>
-                                    </div>
-
-                                    <form method="post" action="/reservar" class="mt-2 mt-md-0">
-                                        <input type="hidden" name="id_cancha"   value="{{ c.id_cancha }}">
-                                        <input type="hidden" name="fecha"       value="{{ request.args.get('fecha') }}">
-                                        <input type="hidden" name="hora_inicio" value="{{ request.args.get('hora_inicio') }}">
-                                        <input type="hidden" name="hora_fin"    value="{{ request.args.get('hora_fin') }}">
-                                        <button type="submit" class="btn btn-outline-success btn-sm">
-                                            Reservar
-                                        </button>
-                                    </form>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
-
-            {% else %}
-                <div class="alert alert-warning">
-                    No hay canchas disponibles para ese horario. Probá con otra fecha o franja horaria.
+                <div class="col-sm-6 col-md-3">
+                    <label for="fecha" class="form-label fw-semibold">Fecha</label>
+                    <input type="date" class="form-control" id="fecha" name="fecha"
+                           value="{{ request.args.get('fecha', '') }}"
+                           min="{{ now().strftime('%Y-%m-%d') if now else '' }}"
+                           required>
                 </div>
-            {% endif %}
 
-        {% else %}
-            <div class="text-center text-muted py-5">
-                Elegí una fecha y un horario para ver las canchas disponibles.
+                <div class="col-sm-6 col-md-2">
+                    <label for="hora_inicio" class="form-label fw-semibold">Hora inicio</label>
+                    <input type="time" class="form-control" id="hora_inicio" name="hora_inicio"
+                           value="{{ request.args.get('hora_inicio', '') }}" required>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <label for="hora_fin" class="form-label fw-semibold">Hora fin</label>
+                    <input type="time" class="form-control" id="hora_fin" name="hora_fin"
+                           value="{{ request.args.get('hora_fin', '') }}" required>
+                </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <label for="id_barrio" class="form-label fw-semibold">Barrio</label>
+                    <select class="form-select" id="id_barrio" name="id_barrio">
+                        <option value="">Todos los barrios</option>
+                        {% for b in barrios %}
+                            <option value="{{ b.id_barrio }}"
+                                {% if request.args.get('id_barrio') == b.id_barrio|string %}selected{% endif %}>
+                                {{ b.barrio }} ({{ b.ciudad }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-sm-12 col-md-2">
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">
+                        Buscar
+                    </button>
+                </div>
+
             </div>
-        {% endif %}
-
+        </form>
     </div>
 </div>
 
+<!-- ── RESULTADOS ── -->
+{% if request.args.get('fecha') %}
+
+    {% if canchas %}
+        <p class="text-muted mb-3">
+            <strong>{{ canchas|length }}</strong> cancha(s) disponible(s) el
+            <strong>{{ request.args.get('fecha') }}</strong>
+            de <strong>{{ request.args.get('hora_inicio') }}</strong>
+            a <strong>{{ request.args.get('hora_fin') }}</strong>.
+        </p>
+
+        {% for complejo, items in canchas|groupby('complejo') %}
+        <div class="card result-card shadow-sm mb-3">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <span>🏟️ {{ complejo }}</span>
+                <small class="text-muted">{{ items|list|length }} cancha(s)</small>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for c in items %}
+                <li class="list-group-item py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong>{{ c.cancha }}</strong>
+                            <span class="badge bg-secondary ms-1">{{ c.tipo }}</span>
+                            {% if c.techada %}
+                                <span class="badge bg-info text-dark ms-1">Techada</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark border ms-1">Aire libre</span>
+                            {% endif %}
+                            <div class="text-muted small mt-1">
+                                👥 {{ c.capacidad_jugadores }} jugadores &nbsp;·&nbsp;
+                                📍 {{ c.barrio }}, {{ c.ciudad }} &nbsp;·&nbsp;
+                                📞 {{ c.telefono }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="text-end">
+                                <div class="fw-bold text-success mb-1">
+                                    ${{ "%.0f"|format(c.precio_por_hora) }}<small class="text-muted fw-normal">/hora</small>
+                                </div>
+                                {% if session.cuenta and session.tipo == "jugador" %}
+                                    <a href="/reservar?id_cancha={{ c.id_cancha }}&fecha={{ request.args.get('fecha') }}&hora_inicio={{ request.args.get('hora_inicio') }}&hora_fin={{ request.args.get('hora_fin') }}&complejo={{ c.complejo }}&cancha={{ c.cancha }}&precio={{ c.precio_por_hora }}"
+                                       class="btn btn-success btn-sm">
+                                        Reservar →
+                                    </a>
+                                {% else %}
+                                    <a href="/login" class="btn btn-outline-success btn-sm">
+                                        Iniciar sesión para reservar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="alert alert-warning">
+            😕 No hay canchas disponibles para ese horario.
+            Probá con otra fecha, franja horaria o sin filtro de barrio.
+        </div>
+    {% endif %}
+
+{% else %}
+    <div class="text-center text-muted py-5">
+        <div style="font-size:3rem">⚽</div>
+        <p class="mt-2">Elegí fecha y horario para ver las canchas disponibles.</p>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Mínimo de fecha: hoy
+const fechaInput = document.getElementById('fecha');
+if (fechaInput && !fechaInput.value) {
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaInput.min = hoy;
+}
+
+// Validar hora fin > hora inicio antes de enviar
+document.querySelector('form').addEventListener('submit', function(e) {
+    const ini = document.getElementById('hora_inicio').value;
+    const fin = document.getElementById('hora_fin').value;
+    if (ini && fin && fin <= ini) {
+        e.preventDefault();
+        alert('La hora de fin debe ser posterior a la hora de inicio.');
+    }
+});
+</script>
 {% endblock %}

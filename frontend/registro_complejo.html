@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Registrar Complejo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+
+        <div class="text-center mb-4">
+            <div style="font-size:2.5rem">🏟️</div>
+            <h1 class="h3 fw-bold">Registrar complejo deportivo</h1>
+            <p class="text-muted">Creá tu cuenta para administrar tus canchas online</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" action="/registro-complejo" novalidate>
+
+                    <h6 class="text-muted fw-semibold mb-3 text-uppercase small">
+                        Datos del complejo
+                    </h6>
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Nombre del complejo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nombre"
+                                   placeholder="Ej: Complejo Palermo Sports" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Dirección <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="direccion"
+                                   placeholder="Ej: Av. Santa Fe 1234" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Barrio <span class="text-danger">*</span></label>
+                            <select class="form-select" name="id_barrio" required>
+                                <option value="">— Seleccioná un barrio —</option>
+                                {% for b in barrios %}
+                                    <option value="{{ b.id_barrio }}">
+                                        {{ b.barrio }} ({{ b.ciudad }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Teléfono</label>
+                            <input type="tel" class="form-control" name="telefono"
+                                   placeholder="1123456789">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea class="form-control" name="descripcion" rows="2"
+                                      placeholder="Contá brevemente tu complejo: servicios, estacionamiento, vestuarios..."></textarea>
+                        </div>
+
+                    </div>
+
+                    <h6 class="text-muted fw-semibold mb-3 text-uppercase small">
+                        Acceso al sistema
+                    </h6>
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email"
+                                   placeholder="complejo@email.com" required>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Contraseña <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="password"
+                                       id="pass1" minlength="6" required>
+                                <button type="button" class="btn btn-outline-secondary"
+                                        onclick="togglePass('pass1',this)">👁</button>
+                            </div>
+                            <div class="form-text">Mínimo 6 caracteres.</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Confirmar contraseña <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="confirm_password"
+                                       id="pass2" required>
+                                <button type="button" class="btn btn-outline-secondary"
+                                        onclick="togglePass('pass2',this)">👁</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-semibold py-2 mt-4">
+                        Registrar complejo 🏟️
+                    </button>
+
+                </form>
+
+                <p class="text-center text-muted small mt-3 mb-0">
+                    ¿Ya tenés cuenta?
+                    <a href="/login" class="text-success fw-semibold">Iniciá sesión</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePass(id, btn) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.textContent = input.type === 'password' ? '👁' : '🙈';
+}
+document.querySelector('form').addEventListener('submit', function(e) {
+    const p1 = document.getElementById('pass1').value;
+    const p2 = document.getElementById('pass2').value;
+    if (p1 !== p2) { e.preventDefault(); alert('Las contraseñas no coinciden.'); }
+});
+</script>
+{% endblock %}

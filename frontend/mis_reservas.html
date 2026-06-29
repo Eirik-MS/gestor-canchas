@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Mis Reservas{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0">
+        📋 Mis reservas
+    </h1>
+    <a href="/buscar" class="btn btn-success">+ Nueva reserva</a>
+</div>
+
+{% if reservas %}
+    {% for r in reservas %}
+    <div class="card mb-3 shadow-sm
+        {% if r.estado_reserva == 'cancelada' %}opacity-75{% endif %}
+        {% if r.alerta_vencido is defined and r.alerta_vencido %}reserva-vencida{% endif %}">
+        <div class="card-body">
+            <div class="row align-items-start">
+                <div class="col">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h5 class="card-title mb-0">{{ r.complejo }} — {{ r.cancha }}</h5>
+                        <span class="badge
+                            {% if r.estado_reserva == 'confirmada' %}bg-success
+                            {% elif r.estado_reserva == 'cancelada' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ r.estado_reserva }}
+                        </span>
+                    </div>
+                    <p class="text-muted mb-1 small">{{ r.tipo }}</p>
+
+                    <p class="mb-1">
+                        📅 {{ r.fecha }} &nbsp;·&nbsp;
+                        🕐 {{ r.hora_inicio|string|truncate(5, true, '') }}
+                        a {{ r.hora_fin|string|truncate(5, true, '') }}
+                    </p>
+
+                    <p class="mb-0">
+                        💰 Total: <strong>${{ "%.0f"|format(r.total) }}</strong>
+                        &nbsp;·&nbsp;
+                        {% if r.medio_pago %}{{ r.medio_pago }}{% endif %}
+                        &nbsp;·&nbsp;
+                        Pago:
+                        {% if r.estado_pago == 'pagado' %}
+                            <span class="badge bg-success">Pagado</span>
+                        {% elif r.estado_pago == 'pendiente' %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                            {% if r.fecha_limite_pago %}
+                                <small class="text-muted">hasta {{ r.fecha_limite_pago }}</small>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-secondary">-</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if r.estado_reserva == 'confirmada' %}
+                <div class="col-auto">
+                    <form method="post" action="/cancelar-reserva/{{ r.id_reserva }}"
+                          onsubmit="return confirm('¿Seguro que querés cancelar esta reserva?')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            Cancelar
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+    <div class="text-center py-5">
+        <div style="font-size:3rem">📭</div>
+        <h5 class="mt-3 text-muted">Todavía no tenés reservas</h5>
+        <a href="/buscar" class="btn btn-success mt-3">Buscar una cancha ⚽</a>
+    </div>
+{% endif %}
+
+{% endblock %}
