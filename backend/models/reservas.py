@@ -168,6 +168,7 @@ def cancelar_reserva(id_reserva):
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al cancelar reserva: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()

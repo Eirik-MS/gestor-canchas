@@ -19,6 +19,7 @@ def crear_cancha(id_complejo, id_tipo_cancha, nombre, techada, precio_por_hora):
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al crear cancha: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()
@@ -152,6 +153,7 @@ def modificar_cancha(id_cancha, nombre=None, techada=None, precio_por_hora=None,
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al modificar cancha: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()
@@ -175,6 +177,7 @@ def eliminar_cancha(id_cancha):
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al dar de baja cancha: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()

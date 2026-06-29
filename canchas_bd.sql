@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS horario_complejo (
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT uq_complejo_dia   UNIQUE (id_complejo, dia_semana),
     CONSTRAINT chk_dia_semana    CHECK  (dia_semana BETWEEN 1 AND 7),
-    CONSTRAINT chk_horario_ok    CHECK  (hora_cierre > hora_apertura)
+    CONSTRAINT chk_horario_ok    CHECK  (hora_cierre > hora_apertura OR hora_cierre <= '03:00:00')
 );
 
 -- ============================================================

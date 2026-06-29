@@ -22,6 +22,7 @@ def crear_usuario(dni, nombre, apellido, email, telefono, password):
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al crear usuario: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()
@@ -107,6 +108,7 @@ def modificar_usuario(dni, nombre=None, apellido=None, email=None, telefono=None
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al modificar usuario: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()

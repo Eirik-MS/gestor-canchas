@@ -23,6 +23,7 @@ def crear_complejo(id_barrio, nombre, direccion, telefono, email, password, desc
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al crear complejo: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()
@@ -121,6 +122,7 @@ def modificar_complejo(id_complejo, nombre=None, direccion=None, telefono=None, 
     except Exception as e:
         conexion.rollback()
         print(f"✗ Error al modificar complejo: {e}")
+        raise
     finally:
         cursor.close()
         conexion.close()
